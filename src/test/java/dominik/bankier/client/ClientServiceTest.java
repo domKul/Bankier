@@ -14,16 +14,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class ClientServiceTest {
 
     @InjectMocks
@@ -34,9 +33,11 @@ class ClientServiceTest {
     private ClientMapper clientMapper;
     @Mock
     private AddressFacade addressFacade;
-    private ClientCreateDto clientCreateDto1 ;
-    private ClientFindDto clientFindDto ;
-    private AddressCreateDto addressCreateDto ;
+    private ClientCreateDto clientCreateDto1;
+    private ClientFindDto clientFindDto;
+    private ClientFindDto clientFindDto1;
+    private ClientFindDto clientFindDto2;
+    private AddressCreateDto addressCreateDto;
     private Client client;
     private Client client1;
     private Client client2;
@@ -50,6 +51,24 @@ class ClientServiceTest {
                 .firstName("firstnameFind")
                 .lastName("lastnameFind")
                 .email("email@email.com")
+                .status(ClientStatusList.ACTIVE.getStatus())
+                .accountsList(new HashSet<>())
+                .addresses(new HashSet<>())
+                .build();
+        clientFindDto1 = ClientFindDto.builder()
+                .clientId(2L)
+                .firstName("firstnameFind1")
+                .lastName("lastnameFind1")
+                .email("email@email.com1")
+                .status(ClientStatusList.ACTIVE.getStatus())
+                .accountsList(new HashSet<>())
+                .addresses(new HashSet<>())
+                .build();
+        clientFindDto2 = ClientFindDto.builder()
+                .clientId(3L)
+                .firstName("firstnameFind2")
+                .lastName("lastnameFind2")
+                .email("email@email.com2")
                 .status(ClientStatusList.ACTIVE.getStatus())
                 .accountsList(new HashSet<>())
                 .addresses(new HashSet<>())
@@ -111,5 +130,18 @@ class ClientServiceTest {
                 () -> clientService.findClientById(123));
         //Then
         assertEquals(ExceptionMessage.NOT_FOUND,notFoundException.getExceptionMessage());
+    }
+
+    @Test
+    void shouldFindAllClients(){
+        //Given
+        List<Client> clients = List.of(client, client1, client2);
+        when(clientRepository.findAll()).thenReturn(clients);
+        when(clientMapper.mapToListClientFind(clients))
+                .thenReturn(List.of(clientFindDto,clientFindDto1,clientFindDto2));
+        //When
+        List<ClientFindDto> allClients = clientService.findAllClients();
+        //Then
+        assertEquals(clients.size(),allClients.size());
     }
 }
