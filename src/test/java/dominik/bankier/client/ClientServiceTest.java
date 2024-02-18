@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,7 @@ class ClientServiceTest {
     @Mock
     private AddressFacade addressFacade;
     private ClientCreateDto clientCreateDto1;
+    private ClientCreateDto clientCreateDto2;
     private ClientFindDto clientFindDto;
     private ClientFindDto clientFindDto1;
     private ClientFindDto clientFindDto2;
@@ -46,6 +48,7 @@ class ClientServiceTest {
     void setUp() {
         addressCreateDto = new AddressCreateDto("Streetname", "Cityname", "countryname");
         clientCreateDto1 = new ClientCreateDto("Firstname","Lastname","email@email.com",addressCreateDto);
+        clientCreateDto2 = new ClientCreateDto("Firstname",null,null,null);
         clientFindDto = ClientFindDto.builder()
                 .clientId(1L)
                 .firstName("firstnameFind")
@@ -143,5 +146,54 @@ class ClientServiceTest {
         List<ClientFindDto> allClients = clientService.findAllClients();
         //Then
         assertEquals(clients.size(),allClients.size());
+        verify(clientRepository,times(1)).findAll();
     }
+
+    @Test
+    void shouldReturnEmptyListIfClientsListAreEmpty(){
+        //Given
+        when(clientRepository.findAll()).thenReturn(new ArrayList<>());
+        //When
+        List<ClientFindDto> allClients = clientService.findAllClients();
+        //Then
+        assertEquals(0, allClients.size());
+        verify(clientRepository,times(1)).findAll();
+    }
+
+    @Test
+    void shouldUpdateFirstNameOnly() {
+        // Given
+        ClientFindDto clientFindDto3 = ClientFindDto.builder()
+                .clientId(3L)
+                .firstName("firstnameFindUpdate")
+                .lastName("lastnameFind2Update")
+                .email("email@email.com2Update")
+                .status(ClientStatusList.ACTIVE.getStatus())
+                .accountsList(new HashSet<>())
+                .addresses(new HashSet<>())
+                .build();
+        when(clientRepository.findById(client.getClientId())).thenReturn(Optional.of(client));
+        when(clientRepository.save(client)).thenReturn(client);
+        when(clientMapper.mapToClientFind(client)).thenReturn(clientFindDto3);
+        // When
+        ClientFindDto updatedClientFindDto = clientService.updateClient(client.getClientId(), clientCreateDto2);
+        // Then
+        verify(clientRepository, times(1)).findById(client.getClientId());
+        verify(clientRepository, times(1)).save(client);
+        verify(clientMapper, times(1)).mapToClientFind(client);
+        assertEquals(updatedClientFindDto.getFirstName(), "firstnameFindUpdate");
+    }
+
+    @Test
+    void shouldHandleNotFoundExceptionIfIdIsWrong(){
+        //Given
+        //When
+        NotFoundException notFoundException = assertThrows(NotFoundException.class,
+                () -> clientService.updateClient(123123123, clientCreateDto1));
+        //Then
+        assertNotNull(notFoundException);
+        assertEquals(ExceptionMessage.NOT_FOUND,notFoundException.getExceptionMessage());
+    }
+
+
 }
