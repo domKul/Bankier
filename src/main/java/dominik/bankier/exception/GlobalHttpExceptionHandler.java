@@ -27,6 +27,13 @@ class GlobalHttpExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessageWithStatus);
     }
 
+    @ExceptionHandler(IllegalAccessException.class)
+    ResponseEntity<ErrorMessageWithStatus> handleIllegalAccessException(IllegalAccessException ex){
+        ErrorMessageWithStatus errorMessageWithStatus = new ErrorMessageWithStatus(ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessageWithStatus);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<ErrorMessage> handleValidationException(MethodArgumentNotValidException ex) {
         BindingResult bindingResult = ex.getBindingResult();

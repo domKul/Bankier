@@ -2,6 +2,7 @@ package dominik.bankier.client;
 
 import dominik.bankier.client.query.ClientCreateDto;
 import dominik.bankier.client.query.ClientFindDto;
+import dominik.bankier.client.query.ClientUpdateDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,8 +39,8 @@ import java.util.List;
 
     @PatchMapping("{clientId}")
     ResponseEntity<ClientFindDto>updateClient(@PathVariable long clientId,
-                                              @RequestBody @Valid ClientCreateDto clientCreateDto){
-        ClientFindDto clientFindDto = clientService.updateClient(clientId, clientCreateDto);
+                                              @RequestBody ClientUpdateDto clientCreateDto){
+        ClientFindDto clientFindDto = clientService.patchClientInfo(clientId, clientCreateDto);
         return ResponseEntity.accepted().body(clientFindDto);
     }
     @DeleteMapping("{clientId}")

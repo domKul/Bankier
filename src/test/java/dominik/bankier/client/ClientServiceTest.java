@@ -4,6 +4,7 @@ import dominik.bankier.address.AddressFacade;
 import dominik.bankier.address.query.AddressCreateDto;
 import dominik.bankier.client.query.ClientCreateDto;
 import dominik.bankier.client.query.ClientFindDto;
+import dominik.bankier.client.query.ClientUpdateDto;
 import dominik.bankier.exception.AlreadyExistException;
 import dominik.bankier.exception.ExceptionMessage;
 import dominik.bankier.exception.NotFoundException;
@@ -36,6 +37,7 @@ class ClientServiceTest {
     private AddressFacade addressFacade;
     private ClientCreateDto clientCreateDto1;
     private ClientCreateDto clientCreateDto2;
+    private ClientUpdateDto clientUpdateDto;
     private ClientFindDto clientFindDto;
     private ClientFindDto clientFindDto1;
     private ClientFindDto clientFindDto2;
@@ -48,7 +50,7 @@ class ClientServiceTest {
     void setUp() {
         addressCreateDto = new AddressCreateDto("Streetname", "Cityname", "countryname");
         clientCreateDto1 = new ClientCreateDto("Firstname","Lastname","email@email.com",addressCreateDto);
-        clientCreateDto2 = new ClientCreateDto("Firstname",null,null,null);
+        clientUpdateDto = new ClientUpdateDto("firstnameFindUpdate",null,null);
         clientFindDto = ClientFindDto.builder()
                 .clientId(1L)
                 .firstName("firstnameFind")
@@ -163,25 +165,27 @@ class ClientServiceTest {
     @Test
     void shouldUpdateFirstNameOnly() {
         // Given
-        ClientFindDto clientFindDto3 = ClientFindDto.builder()
+        ClientFindDto expectedClient = ClientFindDto.builder()
                 .clientId(3L)
                 .firstName("firstnameFindUpdate")
-                .lastName("lastnameFind2Update")
-                .email("email@email.com2Update")
+                .lastName("Lastname")
+                .email("email@email.com")
                 .status(ClientStatusList.ACTIVE.getStatus())
                 .accountsList(new HashSet<>())
                 .addresses(new HashSet<>())
                 .build();
         when(clientRepository.findById(client.getClientId())).thenReturn(Optional.of(client));
         when(clientRepository.save(client)).thenReturn(client);
-        when(clientMapper.mapToClientFind(client)).thenReturn(clientFindDto3);
+        when(clientMapper.mapToClientFind(client)).thenReturn(expectedClient);
         // When
-        ClientFindDto updatedClientFindDto = clientService.updateClient(client.getClientId(), clientCreateDto2);
+        ClientFindDto updatedClientFindDto = clientService.patchClientInfo(client.getClientId(), clientUpdateDto);
         // Then
         verify(clientRepository, times(1)).findById(client.getClientId());
         verify(clientRepository, times(1)).save(client);
         verify(clientMapper, times(1)).mapToClientFind(client);
-        assertEquals(updatedClientFindDto.getFirstName(), "firstnameFindUpdate");
+        assertEquals(clientUpdateDto.firstname(),updatedClientFindDto.getFirstName());
+        assertEquals(client.getLastName(),updatedClientFindDto.getLastName());
+        assertEquals(client.getEmail(),updatedClientFindDto.getEmail());
     }
 
     @Test
@@ -189,11 +193,50 @@ class ClientServiceTest {
         //Given
         //When
         NotFoundException notFoundException = assertThrows(NotFoundException.class,
-                () -> clientService.updateClient(123123123, clientCreateDto1));
+                () -> clientService.patchClientInfo(123123123, clientUpdateDto));
         //Then
         assertNotNull(notFoundException);
         assertEquals(ExceptionMessage.NOT_FOUND,notFoundException.getExceptionMessage());
     }
+
+
+    @Test
+    void shouldDeleteClient(){
+        //Given
+        long clientId = 123;
+        when(clientRepository.findById(clientId)).thenReturn(Optional.ofNullable(client));
+        doNothing().when(clientRepository).delete(client);
+        //When
+        clientService.deleteClient(clientId);
+        //Then
+        verify(clientRepository,times(1)).delete(client);
+    }
+
+    @Test
+    void shouldChangeClientStatusToInactive(){
+        //Given
+        long clientId = 123;
+        when(clientRepository.findById(clientId)).thenReturn(Optional.ofNullable(client));
+        //When
+        clientService.changeToInactive(clientId);
+        //Then
+        assertEquals(ClientStatusList.INACTIVE,client.getStatus());
+    }
+
+    @Test
+    void shouldThrowExceptionIfClientIsAlreadyInactive(){
+        //Given
+        long clientId = 123;
+        when(clientRepository.findById(clientId)).thenReturn(Optional.ofNullable(client));
+        client.setStatus(ClientStatusList.INACTIVE);
+        //When
+        NotFoundException notFoundException = assertThrows(NotFoundException.class,
+                () -> clientService.changeToInactive(clientId));
+        //Then
+        assertEquals(ExceptionMessage.ALREADY_INACTIVE,notFoundException.getExceptionMessage());
+    }
+
+
 
 
 }
