@@ -38,6 +38,7 @@ class ClientServiceTest {
     private ClientCreateDto clientCreateDto1;
     private ClientCreateDto clientCreateDto2;
     private ClientUpdateDto clientUpdateDto;
+    private ClientUpdateDto clientUpdateDtoWitSameValues;
     private ClientFindDto clientFindDto;
     private ClientFindDto clientFindDto1;
     private ClientFindDto clientFindDto2;
@@ -51,6 +52,7 @@ class ClientServiceTest {
         addressCreateDto = new AddressCreateDto("Streetname", "Cityname", "countryname");
         clientCreateDto1 = new ClientCreateDto("Firstname","Lastname","email@email.com",addressCreateDto);
         clientUpdateDto = new ClientUpdateDto("firstnameFindUpdate",null,null);
+        clientUpdateDtoWitSameValues = new ClientUpdateDto("Firstname","Lastname","email@email.com");
         clientFindDto = ClientFindDto.builder()
                 .clientId(1L)
                 .firstName("firstnameFind")
@@ -167,13 +169,14 @@ class ClientServiceTest {
         // Given
         ClientFindDto expectedClient = ClientFindDto.builder()
                 .clientId(3L)
-                .firstName("firstnameFindUpdate")
+                .firstName("Firstname")
                 .lastName("Lastname")
                 .email("email@email.com")
                 .status(ClientStatusList.ACTIVE.getStatus())
                 .accountsList(new HashSet<>())
                 .addresses(new HashSet<>())
                 .build();
+
         when(clientRepository.findById(client.getClientId())).thenReturn(Optional.of(client));
         when(clientRepository.save(client)).thenReturn(client);
         when(clientMapper.mapToClientFind(client)).thenReturn(expectedClient);
@@ -183,9 +186,34 @@ class ClientServiceTest {
         verify(clientRepository, times(1)).findById(client.getClientId());
         verify(clientRepository, times(1)).save(client);
         verify(clientMapper, times(1)).mapToClientFind(client);
-        assertEquals(clientUpdateDto.firstname(),updatedClientFindDto.getFirstName());
+        assertEquals(expectedClient.getFirstName(),updatedClientFindDto.getFirstName());
         assertEquals(client.getLastName(),updatedClientFindDto.getLastName());
         assertEquals(client.getEmail(),updatedClientFindDto.getEmail());
+
+    }
+
+    @Test
+    void shouldNotSaveWithIdenticalValues() {
+        // Given
+        when(clientRepository.findById(client.getClientId())).thenReturn(Optional.of(client));
+        when(clientMapper.mapToClientFind(client)).thenReturn(clientFindDto1);
+        // When
+        clientService.patchClientInfo(client.getClientId(), clientUpdateDtoWitSameValues);
+        // Then
+        verify(clientRepository, times(1)).findById(client.getClientId());
+        verify(clientRepository, times(0)).save(client);
+        verify(clientMapper, times(1)).mapToClientFind(client);
+    }
+
+    @Test
+    void shouldThrowIllegalException(){
+        //Given
+        long customerId = 123;
+        //When
+        IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
+                () -> clientService.patchClientInfo(customerId, null));
+        //Then
+        assertEquals("Client update data cannot be null",illegalArgumentException.getMessage());
     }
 
     @Test

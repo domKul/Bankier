@@ -26,6 +26,7 @@ class ClientService {
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
     private final AddressFacade addressFacade;
+    private final int NUMBER_OF_VALIDATION = 3;
 
 
     void createClient(ClientCreateDto clientCreateDto) {
@@ -61,7 +62,7 @@ class ClientService {
         }
         return clientRepository.findById(clientId)
                 .map(client -> {
-
+                    boolean validField = isNotEqual(clientUpdateDto, client);
                     Optional.ofNullable(clientUpdateDto.firstname())
                             .ifPresent(firstName -> {
                                 if (!Objects.equals(firstName, client.getFirstName())) {
@@ -80,11 +81,29 @@ class ClientService {
                                     client.setEmail(email);
                                 }
                             });
-                    Client savedClient = clientRepository.save(client);
-                    log.info("Client patched");
-                    return clientMapper.mapToClientFind(savedClient);
+                    if (validField){
+                        Client savedClient = clientRepository.save(client);
+                        log.info("Client patched");
+                        return clientMapper.mapToClientFind(savedClient);
+                    }
+                    log.info("Client are not updated");
+                    return clientMapper.mapToClientFind(client);
                 })
                 .orElseThrow(() -> new NotFoundException(ExceptionMessage.NOT_FOUND));
+    }
+
+    private boolean isNotEqual(ClientUpdateDto clientUpdateDto, Client client){
+        int i = 0;
+        if(clientUpdateDto.firstname() != null && clientUpdateDto.firstname().equals(client.getFirstName())){
+            i++;
+        }
+        if(clientUpdateDto.lastName() != null && clientUpdateDto.lastName().equals(client.getLastName())){
+            i++;
+        }
+        if(clientUpdateDto.email() != null && clientUpdateDto.email().equals(client.getEmail())){
+            i++;
+        }
+        return i < NUMBER_OF_VALIDATION;
     }
 
     void deleteClient(final long clientId) {
