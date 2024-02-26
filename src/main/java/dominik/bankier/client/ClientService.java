@@ -62,7 +62,7 @@ class ClientService {
         }
         return clientRepository.findById(clientId)
                 .map(client -> {
-                    boolean validField = isNotEqual(clientUpdateDto, client);
+                    boolean validField = areFieldsDifferent(clientUpdateDto, client);
                     Optional.ofNullable(clientUpdateDto.firstname())
                             .ifPresent(firstName -> {
                                 if (!Objects.equals(firstName, client.getFirstName())) {
@@ -92,7 +92,7 @@ class ClientService {
                 .orElseThrow(() -> new NotFoundException(ExceptionMessage.NOT_FOUND));
     }
 
-    private boolean isNotEqual(ClientUpdateDto clientUpdateDto, Client client){
+    private boolean areFieldsDifferent(ClientUpdateDto clientUpdateDto, Client client){
         int i = 0;
         if(clientUpdateDto.firstname() != null && clientUpdateDto.firstname().equals(client.getFirstName())){
             i++;
