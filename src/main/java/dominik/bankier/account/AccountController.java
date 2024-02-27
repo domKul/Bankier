@@ -20,10 +20,17 @@ class AccountController {
          accountService.createAccount(accountCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
     @DeleteMapping("{accountId}")
     ResponseEntity<Void>deleteAccount(@PathVariable long accountId){
         accountService.deleteAccount(accountId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    @GetMapping("{accountId}")
+    ResponseEntity<AccountFindDto>findAccountById(@PathVariable long accountId){
+        AccountFindDto accountInformationById = accountService.findAccountInformationById(accountId);
+        return ResponseEntity.ok(accountInformationById);
     }
 }
 

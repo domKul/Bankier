@@ -26,15 +26,27 @@ class AccountService {
         ClientFindDto clientFindDto = clientFacade.retrieveClientById(accountCreateDto.getClientId());
         Account account = accountMapper.mapToAccount(accountCreateDto);
         account.setAccountNumber(generateAccountNumber(account.getCurrency(),clientFindDto));
-        accountRepository.save(account);
-        log.info("Account created with");
+        Account savingAccount = accountRepository.save(account);
+        log.info("Account created with id " + savingAccount.getAccountId());
+    }
+
+    AccountFindDto findAccountInformationById(long accountId){
+        Account accountById = findAccountById(accountId);
+        log.info("Account found");
+        return accountMapper.mapToAccountFindDto(accountById);
     }
 
     void deleteAccount(final long accountId){
-        accountRepository.findById(accountId)
-                .orElseThrow(()->new NotFoundException(ExceptionMessage.NOT_FOUND));
+        Account accountById = findAccountById(accountId);
+        accountRepository.delete(accountById);
         log.info("Account deleted");
     }
+
+    private Account findAccountById(long accountId) {
+        return accountRepository.findById(accountId)
+                .orElseThrow(()->new NotFoundException(ExceptionMessage.NOT_FOUND));
+    }
+
     private static String generateAccountNumber(CurrencyList currencyList, ClientFindDto clientFindDto) {
         Random random = new Random();
         long randomLong = random.nextLong();

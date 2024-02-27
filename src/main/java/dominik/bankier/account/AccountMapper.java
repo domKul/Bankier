@@ -14,4 +14,15 @@ class AccountMapper {
                 accountCreateDto.getCurrency()
                 );
     }
+
+    AccountFindDto mapToAccountFindDto(Account account){
+        return new AccountFindDto(account.getAccountId(),
+                account.getAccountNumber(),
+                account.getClient_id(),
+                account.getBalance(),
+                account.getCurrency(),
+                account.getCreationDate(),
+                account.getTransactions()
+                );
+    }
 }
