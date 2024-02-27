@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum ExceptionMessage {
 
     NOT_FOUND("Entity not found"),
+    SAVE_PROBLEM("An error occurred while saving"),
     ALREADY_EXIST("Object already exist"),
     ALREADY_INACTIVE("Already inactive"),
     VALUE_IN_OBJECT_ARE_EQUAL("Values are equal"),

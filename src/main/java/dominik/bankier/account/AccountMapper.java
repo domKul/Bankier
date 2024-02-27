@@ -22,7 +22,8 @@ class AccountMapper {
                 account.getBalance(),
                 account.getCurrency(),
                 account.getCreationDate(),
-                account.getTransactions()
+                account.getTransactionsTo(),
+                account.getTransactionsFrom()
                 );
     }
 }

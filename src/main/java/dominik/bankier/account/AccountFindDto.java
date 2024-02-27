@@ -6,7 +6,7 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @AllArgsConstructor
@@ -18,5 +18,6 @@ class AccountFindDto {
     private BigDecimal balance;
     private CurrencyList currency;
     private LocalDate creationDate;
-    private List<Transaction> transactions;
+    private Set<Transaction> transactionsTo;
+    private Set<Transaction> transactionsFrom;
 }
