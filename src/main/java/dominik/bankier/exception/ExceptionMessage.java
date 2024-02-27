@@ -8,8 +8,10 @@ import lombok.Getter;
 public enum ExceptionMessage {
 
     NOT_FOUND("Entity not found"),
-    ALREADY_INACTIVE("Already Inactive"),
+    ALREADY_EXIST("Object already exist"),
+    ALREADY_INACTIVE("Already inactive"),
     VALUE_IN_OBJECT_ARE_EQUAL("Values are equal"),
+    OBJECT_IS_NULL("GIven object is null"),
     CLIENT_ALREADY_EXIST("Client already registered");
     private final String message;
 }

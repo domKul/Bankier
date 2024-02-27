@@ -14,4 +14,10 @@ import org.springframework.stereotype.Component;
                 client_id
                 );
     }
+    AddressFindDto mapToAddressDtoFind(Address address){
+        return new AddressFindDto(address.getStreetName(),
+                address.getCity(),
+                address.getCountry(),
+                address.getClient_id());
+    }
 }

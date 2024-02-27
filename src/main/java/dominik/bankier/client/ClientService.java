@@ -10,12 +10,12 @@ import dominik.bankier.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +26,6 @@ class ClientService {
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
     private final AddressFacade addressFacade;
-    private final int NUMBER_OF_VALIDATION = 3;
 
 
     void createClient(ClientCreateDto clientCreateDto) {
@@ -93,17 +92,18 @@ class ClientService {
     }
 
     private boolean areFieldsDifferent(ClientUpdateDto clientUpdateDto, Client client){
-        int i = 0;
+        int result = 0;
+        PropertyDescriptor[] propertyDescriptors = BeanUtils.getPropertyDescriptors(clientUpdateDto.getClass());
         if(clientUpdateDto.firstname() != null && clientUpdateDto.firstname().equals(client.getFirstName())){
-            i++;
+            result++;
         }
         if(clientUpdateDto.lastName() != null && clientUpdateDto.lastName().equals(client.getLastName())){
-            i++;
+            result++;
         }
         if(clientUpdateDto.email() != null && clientUpdateDto.email().equals(client.getEmail())){
-            i++;
+            result++;
         }
-        return i < NUMBER_OF_VALIDATION;
+        return result < propertyDescriptors.length -1;
     }
 
     void deleteClient(final long clientId) {

@@ -3,14 +3,13 @@ package dominik.bankier.address;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
-@Table(name = "addresses")
+@Table(name = "addresses",
+        uniqueConstraints = @UniqueConstraint(columnNames={"street_name", "city", "client_id"}))
 @NoArgsConstructor
+@EqualsAndHashCode
 @Getter
 @Setter
 class Address {
@@ -24,6 +23,7 @@ class Address {
     private String city;
     @NotNull
     private String country;
+    @EqualsAndHashCode.Exclude
     private long client_id;
 
     public Address(String streetName, String city, String country, long client_id) {

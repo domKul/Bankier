@@ -1,5 +1,7 @@
-package dominik.bankier.exception;
+package dominik.bankier.exception.handler;
 
+import dominik.bankier.exception.AlreadyExistException;
+import dominik.bankier.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @RestControllerAdvice
@@ -30,6 +33,13 @@ class GlobalHttpExceptionHandler {
     @ExceptionHandler(IllegalAccessException.class)
     ResponseEntity<ErrorMessageWithStatus> handleIllegalAccessException(IllegalAccessException ex){
         ErrorMessageWithStatus errorMessageWithStatus = new ErrorMessageWithStatus(ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessageWithStatus);
+    }
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    ResponseEntity<ErrorMessageWithStatus> handleSQLIntegrityConstraintViolationException(
+            SQLIntegrityConstraintViolationException ex){
+        ErrorMessageWithStatus errorMessageWithStatus = new ErrorMessageWithStatus(ex.getMessage().substring(0,34),
                 HttpStatus.BAD_REQUEST.value());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessageWithStatus);
     }

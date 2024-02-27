@@ -3,7 +3,6 @@ package dominik.bankier.client;
 
 import dominik.bankier.account.query.SimpleAccountQueryDto;
 import dominik.bankier.address.query.SimpleAddressQueryDto;
-import dominik.bankier.client.query.ClientUpdateDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +12,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity

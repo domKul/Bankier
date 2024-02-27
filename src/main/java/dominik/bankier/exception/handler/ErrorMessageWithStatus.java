@@ -1,4 +1,4 @@
-package dominik.bankier.exception;
+package dominik.bankier.exception.handler;
 
 record ErrorMessageWithStatus(String message, int status) {
 }

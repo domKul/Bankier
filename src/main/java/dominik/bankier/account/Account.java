@@ -43,6 +43,4 @@ class Account {
         this.currency = currency;
         this.creationDate = LocalDate.now();
     }
-
-
 }
