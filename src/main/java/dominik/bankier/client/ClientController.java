@@ -50,7 +50,7 @@ import java.util.List;
     }
 
     @PatchMapping("/status/{clientId}")
-    ResponseEntity<Void>statusChange(@PathVariable long clientId){
+    ResponseEntity<Void>statusChangeToInactive(@PathVariable long clientId){
         clientService.changeToInactive(clientId);
         return ResponseEntity.accepted().build();
     }

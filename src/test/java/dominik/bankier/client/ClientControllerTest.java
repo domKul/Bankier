@@ -116,8 +116,18 @@ class ClientControllerTest {
                 .andExpect(jsonPath("$.[1].firstName").value("firstnameFind2"));
         //Then
         verify(clientService,times(1)).findAllClients();
+    }
 
-
+    @Test
+    void shouldDeleteClientByGivenId() throws Exception {
+        //Given
+        long clientId = 123L;
+        doNothing().when(clientService).deleteClient(clientId);
+        //When
+        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/clients/" + clientId))
+                .andExpect(status().isAccepted());
+        //Then
+        verify(clientService,times(1)).deleteClient(clientId);
     }
 
 
