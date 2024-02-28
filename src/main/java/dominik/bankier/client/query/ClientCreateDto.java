@@ -7,9 +7,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record ClientCreateDto(
-        @NotNull(message = "firstname required")
-        @NotBlank(message = "firstname required")
-        String firstname,
+        @NotNull(message = "firstName required")
+        @NotBlank(message = "firstName required")
+        String firstName,
         @NotNull(message = "lastName required")
         String lastName,
         @NotNull(message = "email required")

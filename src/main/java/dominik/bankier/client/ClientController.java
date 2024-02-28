@@ -20,9 +20,9 @@ import java.util.List;
     private final ClientService clientService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Void>addClient(@RequestBody @Valid ClientCreateDto clientCreateDto){
-        clientService.createClient(clientCreateDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    ResponseEntity<ClientCreateDto>addClient(@RequestBody @Valid ClientCreateDto clientCreateDto){
+        ClientCreateDto client = clientService.createClient(clientCreateDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(client);
     }
 
     @GetMapping("{clientId}")

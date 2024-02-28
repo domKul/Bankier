@@ -41,7 +41,7 @@ class ClientMapperTest {
         Client mappedToClient = clientMapper.mapToClient(clientCreateDto);
         //Then
         assertEquals(Client.class,mappedToClient.getClass());
-        assertEquals(clientCreateDto.firstname(),mappedToClient.getFirstName());
+        assertEquals(clientCreateDto.firstName(),mappedToClient.getFirstName());
         assertEquals(clientCreateDto.lastName(),mappedToClient.getLastName());
     }
 

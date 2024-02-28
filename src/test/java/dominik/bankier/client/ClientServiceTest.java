@@ -90,7 +90,7 @@ class ClientServiceTest {
     void shouldThrowAlreadyExistExceptionWhenClientExists() {
         // Given
         when(clientRepository.existsClientByEmailAndFirstNameAndLastName(clientCreateDto1.email(),
-                clientCreateDto1.firstname(), clientCreateDto1.lastName())).thenReturn(true);
+                clientCreateDto1.firstName(), clientCreateDto1.lastName())).thenReturn(true);
 
         // When
         Assertions.assertThrows(AlreadyExistException.class, () -> clientService.createClient(clientCreateDto1));
@@ -105,8 +105,12 @@ class ClientServiceTest {
         when(clientRepository.save(client)).thenReturn(client);
         doNothing().when(addressFacade).createAddressWithClient(addressCreateDto,client.getClientId());
         //When
-        clientService.createClient(clientCreateDto1);
+        ClientCreateDto savedClient = clientService.createClient(clientCreateDto1);
         //Then
+        assertNotNull(savedClient);
+        assertEquals(clientCreateDto1.firstName(),savedClient.firstName());
+        assertEquals(clientCreateDto1.lastName(),savedClient.lastName());
+        assertEquals(clientCreateDto1.email(),savedClient.email());
         verify(clientMapper,times(1)).mapToClient(clientCreateDto1);
         verify(clientRepository,times(1)).save(client);
         verify(addressFacade,times(1)).createAddressWithClient(addressCreateDto,client.getClientId());

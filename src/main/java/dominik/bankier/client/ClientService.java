@@ -14,7 +14,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
 import java.util.*;
 
 @Service
@@ -28,15 +27,16 @@ class ClientService {
     private final AddressFacade addressFacade;
 
 
-    void createClient(ClientCreateDto clientCreateDto) {
+    ClientCreateDto createClient(ClientCreateDto clientCreateDto) {
         if (clientRepository.existsClientByEmailAndFirstNameAndLastName(clientCreateDto.email(),
-                clientCreateDto.firstname(), clientCreateDto.lastName())) {
+                clientCreateDto.firstName(), clientCreateDto.lastName())) {
             throw new AlreadyExistException(ExceptionMessage.CLIENT_ALREADY_EXIST);
         }
         Client clientToSave = clientMapper.mapToClient(clientCreateDto);
-        Client save = clientRepository.save(clientToSave);
-        addressFacade.createAddressWithClient(clientCreateDto.simpleAddressQueryDto(), save.getClientId());
-        log.info("Client added with id " + save.getClientId());
+        Client savedClient = clientRepository.save(clientToSave);
+        addressFacade.createAddressWithClient(clientCreateDto.simpleAddressQueryDto(), savedClient.getClientId());
+        log.info("Client added with id " + savedClient.getClientId());
+        return clientCreateDto;
     }
 
     ClientFindDto findClientById(final long clientId) {

@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AddressServiceTest {
+class AddressServiceTest {
 
     @InjectMocks
     private AddressService addressService;
@@ -30,25 +30,25 @@ public class AddressServiceTest {
 
     @BeforeEach
     void setUp() {
-        address = new Address("street","city","countr",132L);
-        addressCreateDto = new AddressCreateDto("streetCreate","cityCreate","countrCreate");
-        addressFindDto = new AddressFindDto("street","city","countr",132L);
+        address = new Address("street", "city", "countr", 132L);
+        addressCreateDto = new AddressCreateDto("streetCreate", "cityCreate", "countrCreate");
+        addressFindDto = new AddressFindDto("street", "city", "countr", 132L);
     }
 
     @Test
-    void shouldCreateAddressIfIsNotExistWitSameClient(){
+    void shouldCreateAddressIfIsNotExistWitSameClient() {
         //Given
         long clientId = 132L;
         when(addressRepository.existsAddressByClient_idAndStreetName(clientId,
                 addressCreateDto.streetName())).thenReturn(false);
-        when(addressMapper.mapToAddress(addressCreateDto,clientId)).thenReturn(address);
+        when(addressMapper.mapToAddress(addressCreateDto, clientId)).thenReturn(address);
         //When
-        addressService.createAddress(addressCreateDto,clientId);
+        addressService.createAddress(addressCreateDto, clientId);
         //Then
-        verify(addressRepository,times(1)).save(address);
-        verify(addressRepository,times(1))
-                .existsAddressByClient_idAndStreetName(clientId,addressCreateDto.streetName());
-        verify(addressMapper,times(1)).mapToAddress(addressCreateDto,clientId);
+        verify(addressRepository, times(1)).save(address);
+        verify(addressRepository, times(1))
+                .existsAddressByClient_idAndStreetName(clientId, addressCreateDto.streetName());
+        verify(addressMapper, times(1)).mapToAddress(addressCreateDto, clientId);
     }
 
     @Test
@@ -60,13 +60,8 @@ public class AddressServiceTest {
         // When
         AlreadyExistException alreadyExistException = assertThrows(
                 AlreadyExistException.class,
-                () -> addressService.isAddressExistForClient(clientId, addressCreateDto.streetName())
-        );
+                () -> addressService.isAddressExistForClient(clientId, addressCreateDto.streetName()));
         //Then
         assertEquals(ExceptionMessage.ALREADY_EXIST, alreadyExistException.getExceptionMessage());
     }
-
-
-
-
 }

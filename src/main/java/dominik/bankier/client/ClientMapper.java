@@ -10,7 +10,7 @@ import java.util.List;
 class ClientMapper {
 
     Client mapToClient(ClientCreateDto clientCreateDto){
-        return new Client(clientCreateDto.firstname(),
+        return new Client(clientCreateDto.firstName(),
                 clientCreateDto.lastName(),
                 clientCreateDto.email());
     }
