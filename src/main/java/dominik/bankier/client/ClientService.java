@@ -7,11 +7,12 @@ import dominik.bankier.client.query.ClientUpdateDto;
 import dominik.bankier.exception.AlreadyExistException;
 import dominik.bankier.exception.ExceptionMessage;
 import dominik.bankier.exception.NotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.beans.PropertyDescriptor;
 import java.util.*;
@@ -19,7 +20,6 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
 class ClientService {
 
     private final ClientRepository clientRepository;
@@ -55,8 +55,9 @@ class ClientService {
         return clientFindDto;
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ClientFindDto patchClientInfo(final long clientId, ClientUpdateDto clientUpdateDto) {
-        if (clientUpdateDto == null ) {
+        if (clientUpdateDto == null) {
             throw new IllegalArgumentException("Client update data cannot be null");
         }
         return clientRepository.findById(clientId)
@@ -80,10 +81,9 @@ class ClientService {
                                     client.setEmail(email);
                                 }
                             });
-                    if (validField){
-                        Client savedClient = clientRepository.save(client);
+                    if (validField) {
                         log.info("Client patched");
-                        return clientMapper.mapToClientFind(savedClient);
+                        return clientMapper.mapToClientFind(client);
                     }
                     log.info("Client are not updated");
                     return clientMapper.mapToClientFind(client);
@@ -112,15 +112,14 @@ class ClientService {
         log.info("Client deleted with id " + client.getClientId());
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void changeToInactive(final long clientId) {
         Client client = getClient(clientId);
         if (client.getStatus().equals(ClientStatusList.INACTIVE)) {
             throw new NotFoundException(ExceptionMessage.ALREADY_INACTIVE);
         }
         client.setStatus(ClientStatusList.INACTIVE);
-        clientRepository.save(client);
     }
-
 
     private Client getClient(long clientId) {
         return clientRepository.findById(clientId)
