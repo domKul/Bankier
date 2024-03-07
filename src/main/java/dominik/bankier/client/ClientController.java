@@ -43,6 +43,7 @@ import java.util.List;
         ClientFindDto clientFindDto = clientService.patchClientInfo(clientId, clientCreateDto);
         return ResponseEntity.accepted().body(clientFindDto);
     }
+
     @DeleteMapping("{clientId}")
     ResponseEntity<Void>deleteClient(@PathVariable long clientId){
         clientService.deleteClient(clientId);

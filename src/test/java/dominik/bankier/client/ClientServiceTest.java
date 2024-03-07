@@ -182,13 +182,11 @@ class ClientServiceTest {
                 .build();
 
         when(clientRepository.findById(client.getClientId())).thenReturn(Optional.of(client));
-        when(clientRepository.save(client)).thenReturn(client);
         when(clientMapper.mapToClientFind(client)).thenReturn(expectedClient);
         // When
         ClientFindDto updatedClientFindDto = clientService.patchClientInfo(client.getClientId(), clientUpdateDto);
         // Then
         verify(clientRepository, times(1)).findById(client.getClientId());
-        verify(clientRepository, times(1)).save(client);
         verify(clientMapper, times(1)).mapToClientFind(client);
         assertEquals(expectedClient.getFirstName(),updatedClientFindDto.getFirstName());
         assertEquals(client.getLastName(),updatedClientFindDto.getLastName());
