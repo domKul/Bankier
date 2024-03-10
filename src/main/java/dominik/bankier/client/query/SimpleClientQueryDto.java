@@ -28,11 +28,11 @@ public class SimpleClientQueryDto {
     @Email
     private String email;
     @EqualsAndHashCode.Exclude
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "client_id")
     private Set<SimpleAddressQueryDto> addresses;
     @EqualsAndHashCode.Exclude
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "client_id")
     private Set<SimpleAccountQueryDto> accountsList;
 

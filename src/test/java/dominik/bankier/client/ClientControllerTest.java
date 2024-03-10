@@ -5,6 +5,8 @@ import dominik.bankier.address.query.AddressCreateDto;
 import dominik.bankier.client.query.ClientCreateDto;
 import dominik.bankier.client.query.ClientFindDto;
 import dominik.bankier.client.query.ClientUpdateDto;
+import dominik.bankier.exception.ExceptionMessage;
+import dominik.bankier.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,12 +50,12 @@ class ClientControllerTest {
     void shouldCreateClientAndReturnStatus201() throws Exception {
         //Given
         AddressCreateDto addressCreateDto = new AddressCreateDto("Streetname", "Cityname", "countryname");
-        ClientCreateDto clientCreateDto1 = new ClientCreateDto("Firstname","Lastname","email@email.com",addressCreateDto);
+        ClientCreateDto clientCreateDto1 = new ClientCreateDto("Firstname", "Lastname", "email@email.com", addressCreateDto);
         when(clientService.createClient(clientCreateDto1)).thenReturn(clientCreateDto1);
         //When
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/clients")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(clientCreateDto1)))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(clientCreateDto1)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstName").value(clientCreateDto1.firstName()))
                 .andExpect(jsonPath("$.email").value(clientCreateDto1.email()))
@@ -79,13 +81,13 @@ class ClientControllerTest {
         //When
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/clients/" + clientToFind.getClientId())
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value(clientToFind.getFirstName()))
                 .andExpect(jsonPath("$.status").value(clientToFind.getStatus()))
                 .andExpect(jsonPath("$.lastName").value(clientToFind.getLastName()));
         //Then
-        verify(clientService,times(1)).findClientById(clientToFind.getClientId());
+        verify(clientService, times(1)).findClientById(clientToFind.getClientId());
     }
 
     @Test
@@ -109,16 +111,16 @@ class ClientControllerTest {
                 .accountsList(new HashSet<>())
                 .addresses(new HashSet<>())
                 .build();
-        when(clientService.findAllClients()).thenReturn(List.of(clientToFind1,clientToFind2));
+        when(clientService.findAllClients()).thenReturn(List.of(clientToFind1, clientToFind2));
         //When
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/clients")
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(2))
                 .andExpect(jsonPath("$.[0].firstName").value("firstnameFind1"))
                 .andExpect(jsonPath("$.[1].firstName").value("firstnameFind2"));
         //Then
-        verify(clientService,times(1)).findAllClients();
+        verify(clientService, times(1)).findAllClients();
     }
 
     @Test
@@ -130,11 +132,11 @@ class ClientControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.delete("/v1/clients/" + clientId))
                 .andExpect(status().isAccepted());
         //Then
-        verify(clientService,times(1)).deleteClient(clientId);
+        verify(clientService, times(1)).deleteClient(clientId);
     }
 
     @Test
-    public void testUpdateClient_Success() throws Exception {
+    public void shouldUpdateClientSuccessfully() throws Exception {
         //Given
         ClientUpdateDto clientUpdateDto = new ClientUpdateDto("updateFirstname", "updateLastName", "updateEmail");
         ClientFindDto expected = ClientFindDto.builder()
@@ -147,14 +149,43 @@ class ClientControllerTest {
                 .addresses(new HashSet<>())
                 .build();
         when(clientService.patchClientInfo(expected.getClientId(), clientUpdateDto)).thenReturn(expected);
-
-        mockMvc.perform(MockMvcRequestBuilders.patch("/v1/clients/"+ 1L)
+        //When
+        mockMvc.perform(MockMvcRequestBuilders.patch("/v1/clients/" + 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(clientUpdateDto)))
-                .andExpect(status().isAccepted());
-
-        // Verify interactions with clientService
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.firstName").value(expected.getFirstName()))
+                .andExpect(jsonPath("$.lastName").value(expected.getLastName()));
+        //Then
         verify(clientService).patchClientInfo(1L, clientUpdateDto);
+    }
+
+    @Test
+    public void testStatusChangeToInactive_Success() throws Exception {
+        //Given
+        long clientId = 1L;
+        doNothing().when(clientService).changeToInactive(clientId);
+        //When
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch("/v1/clients/status/{clientId}", clientId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        //Then
+        assertEquals(HttpStatus.ACCEPTED.value(), result.getResponse().getStatus());
+        verify(clientService).changeToInactive(clientId);
+    }
+
+    @Test
+    public void testStatusChangeToInactiveWithWrongClientId() throws Exception {
+        //Given
+        long clientId = 1L;
+        doThrow(new NotFoundException(ExceptionMessage.NOT_FOUND)).when(clientService).changeToInactive(clientId);
+        //When
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch("/v1/clients/status/{clientId}", clientId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        //Then
+        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+        verify(clientService).changeToInactive(clientId);
     }
 
 

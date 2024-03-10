@@ -15,7 +15,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.beans.PropertyDescriptor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -91,21 +94,22 @@ class ClientService {
                 .orElseThrow(() -> new NotFoundException(ExceptionMessage.NOT_FOUND));
     }
 
-    private boolean areFieldsDifferent(ClientUpdateDto clientUpdateDto, Client client){
+    private boolean areFieldsDifferent(ClientUpdateDto clientUpdateDto, Client client) {
         int result = 0;
         PropertyDescriptor[] propertyDescriptors = BeanUtils.getPropertyDescriptors(clientUpdateDto.getClass());
-        if(clientUpdateDto.firstname() != null && clientUpdateDto.firstname().equals(client.getFirstName())){
+        if (clientUpdateDto.firstname() != null && clientUpdateDto.firstname().equals(client.getFirstName())) {
             result++;
         }
-        if(clientUpdateDto.lastName() != null && clientUpdateDto.lastName().equals(client.getLastName())){
+        if (clientUpdateDto.lastName() != null && clientUpdateDto.lastName().equals(client.getLastName())) {
             result++;
         }
-        if(clientUpdateDto.email() != null && clientUpdateDto.email().equals(client.getEmail())){
+        if (clientUpdateDto.email() != null && clientUpdateDto.email().equals(client.getEmail())) {
             result++;
         }
-        return result < propertyDescriptors.length -1;
+        return result < propertyDescriptors.length - 1;
     }
 
+    @Transactional
     void deleteClient(final long clientId) {
         Client client = getClient(clientId);
         clientRepository.delete(client);
@@ -121,7 +125,7 @@ class ClientService {
         client.setStatus(ClientStatusList.INACTIVE);
     }
 
-    private Client getClient(long clientId) {
+    private Client getClient(final long clientId) {
         return clientRepository.findById(clientId)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessage.NOT_FOUND));
     }

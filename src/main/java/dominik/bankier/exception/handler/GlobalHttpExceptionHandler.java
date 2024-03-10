@@ -26,8 +26,8 @@ class GlobalHttpExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     ResponseEntity<ErrorMessageWithStatus> handleNotFoundException(NotFoundException ex){
         ErrorMessageWithStatus errorMessageWithStatus = new ErrorMessageWithStatus(ex.getExceptionMessage().getMessage(),
-                HttpStatus.BAD_REQUEST.value());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessageWithStatus);
+                HttpStatus.NOT_FOUND.value());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessageWithStatus);
     }
 
     @ExceptionHandler(IllegalAccessException.class)

@@ -20,7 +20,7 @@ import java.util.Set;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
- class Client {
+class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,11 +43,11 @@ import java.util.Set;
     @JoinColumn(name = "client_id")
     private Set<SimpleAccountQueryDto> accountsList;
 
-    public Client( String firstName, String lastName, String email) {
+    public Client(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.status= ClientStatusList.ACTIVE;
+        this.status = ClientStatusList.ACTIVE;
         this.addresses = new HashSet<>();
         this.accountsList = new HashSet<>();
     }
