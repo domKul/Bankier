@@ -123,17 +123,17 @@ class ClientControllerTest {
         verify(clientService, times(1)).findAllClients();
     }
 
-    @Test
-    void shouldDeleteClientByGivenId() throws Exception {
-        //Given
-        long clientId = 123L;
-        doNothing().when(clientService).deleteClient(clientId);
-        //When
-        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/clients/" + clientId))
-                .andExpect(status().isAccepted());
-        //Then
-        verify(clientService, times(1)).deleteClient(clientId);
-    }
+//    @Test
+//    void shouldDeleteClientByGivenId() throws Exception {
+//        //Given
+//        long clientId = 123L;
+//        doNothing().when(clientService).suspendClient(clientId);
+//        //When
+//        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/clients/" + clientId))
+//                .andExpect(status().isAccepted());
+//        //Then
+//        verify(clientService, times(1)).suspendClient(clientId);
+//    }
 
     @Test
     public void shouldUpdateClientSuccessfully() throws Exception {
@@ -164,28 +164,31 @@ class ClientControllerTest {
     public void testStatusChangeToInactive_Success() throws Exception {
         //Given
         long clientId = 1L;
-        doNothing().when(clientService).changeToInactive(clientId);
+        ClientStatusList inactive = ClientStatusList.INACTIVE;
+        doNothing().when(clientService).changeStatusOfClient(clientId,inactive);
         //When
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch("/v1/clients/status/{clientId}", clientId)
-                        .contentType(MediaType.APPLICATION_JSON))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch("/v1/clients/status/{clientId}",clientId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(inactive)))
                 .andReturn();
         //Then
         assertEquals(HttpStatus.ACCEPTED.value(), result.getResponse().getStatus());
-        verify(clientService).changeToInactive(clientId);
+        verify(clientService).changeStatusOfClient(clientId,inactive);
     }
 
     @Test
     public void testStatusChangeToInactiveWithWrongClientId() throws Exception {
         //Given
         long clientId = 1L;
-        doThrow(new NotFoundException(ExceptionMessage.NOT_FOUND)).when(clientService).changeToInactive(clientId);
+        ClientStatusList inactive = ClientStatusList.INACTIVE;
+        doThrow(new NotFoundException(ExceptionMessage.NOT_FOUND)).when(clientService).changeStatusOfClient(clientId,null);
         //When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch("/v1/clients/status/{clientId}", clientId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
         //Then
         assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-        verify(clientService).changeToInactive(clientId);
+        verify(clientService).changeStatusOfClient(clientId,null);
     }
 
 

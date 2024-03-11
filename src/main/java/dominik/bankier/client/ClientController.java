@@ -44,15 +44,10 @@ import java.util.List;
         return ResponseEntity.accepted().body(clientFindDto);
     }
 
-    @DeleteMapping("{clientId}")
-    ResponseEntity<Void>deleteClient(@PathVariable long clientId){
-        clientService.deleteClient(clientId);
-        return ResponseEntity.accepted().build();
-    }
-
     @PatchMapping("/status/{clientId}")
-    ResponseEntity<Void>statusChangeToInactive(@PathVariable long clientId){
-        clientService.changeToInactive(clientId);
+    ResponseEntity<Void>statusChangeToInactive(@PathVariable long clientId,
+                                               @RequestBody(required = false) ClientStatusList clientStatusList){
+        clientService.changeStatusOfClient(clientId,clientStatusList);
         return ResponseEntity.accepted().build();
     }
 }

@@ -230,17 +230,17 @@ class ClientServiceTest {
     }
 
 
-    @Test
-    void shouldDeleteClient(){
-        //Given
-        long clientId = 123;
-        when(clientRepository.findById(clientId)).thenReturn(Optional.ofNullable(client));
-        doNothing().when(clientRepository).delete(client);
-        //When
-        clientService.deleteClient(clientId);
-        //Then
-        verify(clientRepository,times(1)).delete(client);
-    }
+//    @Test
+//    void shouldDeleteClient(){
+//        //Given
+//        long clientId = 123;
+//        when(clientRepository.findById(clientId)).thenReturn(Optional.ofNullable(client));
+//        doNothing().when(clientRepository).delete(client);
+//        //When
+//        clientService.suspendClient(clientId);
+//        //Then
+//        verify(clientRepository,times(1)).delete(client);
+//    }
 
     @Test
     void shouldChangeClientStatusToInactive(){
@@ -248,7 +248,7 @@ class ClientServiceTest {
         long clientId = 123;
         when(clientRepository.findById(clientId)).thenReturn(Optional.ofNullable(client));
         //When
-        clientService.changeToInactive(clientId);
+        clientService.changeStatusOfClient(clientId,ClientStatusList.INACTIVE);
         //Then
         assertEquals(ClientStatusList.INACTIVE,client.getStatus());
     }
@@ -261,7 +261,7 @@ class ClientServiceTest {
         client.setStatus(ClientStatusList.INACTIVE);
         //When
         NotFoundException notFoundException = assertThrows(NotFoundException.class,
-                () -> clientService.changeToInactive(clientId));
+                () -> clientService.changeStatusOfClient(clientId,ClientStatusList.INACTIVE));
         //Then
         assertEquals(ExceptionMessage.ALREADY_INACTIVE,notFoundException.getExceptionMessage());
     }

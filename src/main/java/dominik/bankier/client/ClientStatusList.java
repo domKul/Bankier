@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 enum ClientStatusList {
     ACTIVE("ACTIVE"),
+    SUSPENDED("SUSPENDED"),
     INACTIVE("INACTIVE");
     private final String status;
 }
