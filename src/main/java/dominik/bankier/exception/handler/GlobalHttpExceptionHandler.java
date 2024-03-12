@@ -1,6 +1,7 @@
 package dominik.bankier.exception.handler;
 
 import dominik.bankier.exception.AlreadyExistException;
+import dominik.bankier.exception.NotActiveException;
 import dominik.bankier.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,13 @@ class GlobalHttpExceptionHandler {
         ErrorMessageWithStatus errorMessageWithStatus = new ErrorMessageWithStatus(ex.getExceptionMessage().getMessage(),
                 HttpStatus.NOT_FOUND.value());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessageWithStatus);
+    }
+
+    @ExceptionHandler(NotActiveException.class)
+    ResponseEntity<ErrorMessageWithStatus> handleNotActiveException(NotActiveException ex){
+        ErrorMessageWithStatus errorMessageWithStatus = new ErrorMessageWithStatus(ex.getExceptionMessage().getMessage(),
+                HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessageWithStatus);
     }
 
     @ExceptionHandler(IllegalAccessException.class)

@@ -6,12 +6,14 @@ import dominik.bankier.client.query.ClientFindDto;
 import dominik.bankier.client.query.ClientUpdateDto;
 import dominik.bankier.exception.AlreadyExistException;
 import dominik.bankier.exception.ExceptionMessage;
+import dominik.bankier.exception.NotActiveException;
 import dominik.bankier.exception.NotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
@@ -22,7 +24,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
 class ClientService {
 
     private final ClientRepository clientRepository;
@@ -30,6 +31,7 @@ class ClientService {
     private final AddressFacade addressFacade;
 
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     ClientCreateDto createClient(ClientCreateDto clientCreateDto) {
         if (clientRepository.existsClientByEmailAndFirstNameAndLastName(clientCreateDto.email(),
                 clientCreateDto.firstName(), clientCreateDto.lastName())) {
@@ -47,6 +49,13 @@ class ClientService {
         return clientMapper.mapToClientFind(client);
     }
 
+    private void statusCheck(Client client) {
+        if (isClientActiveStatus(client)){
+            log.warn("Client not active");
+            throw new NotActiveException(ExceptionMessage.CLIENT_NOT_ACTIVE);
+        }
+    }
+
     List<ClientFindDto> findAllClients() {
         List<Client> allClients = clientRepository.findAll();
         if (allClients.isEmpty()) {
@@ -58,12 +67,14 @@ class ClientService {
         return clientFindDto;
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public ClientFindDto patchClientInfo(final long clientId, ClientUpdateDto clientUpdateDto) {
         if (clientUpdateDto == null) {
             throw new IllegalArgumentException("Client update data cannot be null");
         }
         return clientRepository.findById(clientId)
                 .map(client -> {
+                    statusCheck(client);
                     boolean validField = areFieldsDifferent(clientUpdateDto, client);
                     Optional.ofNullable(clientUpdateDto.firstname())
                             .ifPresent(firstName -> {
@@ -108,17 +119,19 @@ class ClientService {
         return result < propertyDescriptors.length - 1;
     }
 
+    boolean isClientActiveStatus(Client client){
+        return !client.getStatus().equals(ClientStatusList.ACTIVE);
+    }
+
+    @Transactional
     void changeStatusOfClient(final long clientId, ClientStatusList clientStatusList) {
         Client client = getClient(clientId);
-        if (client.getStatus().equals(clientStatusList)) {
-            throw new NotFoundException(ExceptionMessage.ALREADY_INACTIVE);
-        }
         statusChange(client,clientStatusList);
     }
 
-    void statusChange(Client client,ClientStatusList clientStatusList){
+    void statusChange(Client client, ClientStatusList clientStatusList) {
         client.setStatus(ClientStatusList.ACTIVE);
-        if (clientStatusList != null){
+        if (clientStatusList != null) {
             client.setStatus(clientStatusList);
         }
     }
