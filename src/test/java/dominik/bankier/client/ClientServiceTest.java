@@ -191,7 +191,6 @@ class ClientServiceTest {
         assertEquals(expectedClient.getFirstName(),updatedClientFindDto.getFirstName());
         assertEquals(client.getLastName(),updatedClientFindDto.getLastName());
         assertEquals(client.getEmail(),updatedClientFindDto.getEmail());
-
     }
 
     @Test
@@ -251,9 +250,4 @@ class ClientServiceTest {
         //Then
         assertEquals(ClientStatusList.INACTIVE,client.getStatus());
     }
-
-
-
-
-
 }

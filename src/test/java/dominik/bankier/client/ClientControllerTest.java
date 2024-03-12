@@ -123,17 +123,17 @@ class ClientControllerTest {
         verify(clientService, times(1)).findAllClients();
     }
 
-//    @Test
-//    void shouldDeleteClientByGivenId() throws Exception {
-//        //Given
-//        long clientId = 123L;
-//        doNothing().when(clientService).suspendClient(clientId);
-//        //When
-//        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/clients/" + clientId))
-//                .andExpect(status().isAccepted());
-//        //Then
-//        verify(clientService, times(1)).suspendClient(clientId);
-//    }
+    @Test
+    void shouldChangeClientStatusToActive() throws Exception {
+        //Given
+        long clientId = 123L;
+        doNothing().when(clientService).changeStatusOfClient(clientId,null);
+        //When
+        mockMvc.perform(MockMvcRequestBuilders.patch("/v1/clients/status/" + clientId))
+                .andExpect(status().isAccepted());
+        //Then
+        verify(clientService, times(1)).changeStatusOfClient(clientId,null);
+    }
 
     @Test
     public void shouldUpdateClientSuccessfully() throws Exception {
@@ -180,7 +180,6 @@ class ClientControllerTest {
     public void testStatusChangeToInactiveWithWrongClientId() throws Exception {
         //Given
         long clientId = 1L;
-        ClientStatusList inactive = ClientStatusList.INACTIVE;
         doThrow(new NotFoundException(ExceptionMessage.NOT_FOUND)).when(clientService).changeStatusOfClient(clientId,null);
         //When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch("/v1/clients/status/{clientId}", clientId)
@@ -190,8 +189,4 @@ class ClientControllerTest {
         assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
         verify(clientService).changeStatusOfClient(clientId,null);
     }
-
-
-
-
 }

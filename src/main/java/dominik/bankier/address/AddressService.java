@@ -2,11 +2,12 @@ package dominik.bankier.address;
 
 import dominik.bankier.address.query.AddressCreateDto;
 import dominik.bankier.exception.*;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -14,12 +15,12 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
 class AddressService {
 
     private final AddressRepository addressRepository;
     private final AddressMapper addressMapper;
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void createAddress(AddressCreateDto addressCreateDto, long client_id) {
         try {
             boolean addressExists = isAddressExistForClient(client_id, addressCreateDto.streetName());
