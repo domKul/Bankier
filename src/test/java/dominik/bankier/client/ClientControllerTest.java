@@ -145,7 +145,7 @@ class ClientControllerTest {
                 .accountsList(new HashSet<>())
                 .addresses(new HashSet<>())
                 .build();
-        //when(clientService.patchClientInfo(expected.getClientId(), clientUpdateDto)).thenReturn(expected);
+        when(clientService.patchClientInfo(expected.getClientId(), clientUpdateDto)).thenReturn(expected);
         //When
         mockMvc.perform(MockMvcRequestBuilders.patch("/v1/clients/" + 1L)
                         .contentType(MediaType.APPLICATION_JSON)
