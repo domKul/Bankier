@@ -1,16 +1,16 @@
 package dominik.bankier.address;
 
 import dominik.bankier.address.query.AddressCreateDto;
-import dominik.bankier.exception.*;
+import dominik.bankier.exception.AddressSaveException;
+import dominik.bankier.exception.AlreadyExistException;
+import dominik.bankier.exception.ExceptionMessage;
+import dominik.bankier.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,13 +44,13 @@ class AddressService {
         return false;
     }
 
-
     AddressFindDto findAddressByGivenId(final long addressId) {
         Address addressById = getAddressById(addressId);
         log.info("Address found with id " + addressById.getAddressId());
         return addressMapper.mapToAddressDtoFind(addressById);
     }
 
+    @Transactional
     void deleteAddress(final long addressId) {
         Address address = getAddressById(addressId);
         addressRepository.delete(address);

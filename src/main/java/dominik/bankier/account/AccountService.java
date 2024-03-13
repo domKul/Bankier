@@ -2,19 +2,22 @@ package dominik.bankier.account;
 
 import dominik.bankier.account.query.AccountCreateDto;
 import dominik.bankier.client.ClientFacade;
+import dominik.bankier.client.ClientStatusList;
 import dominik.bankier.client.query.ClientFindDto;
 import dominik.bankier.exception.ExceptionMessage;
+import dominik.bankier.exception.NotActiveException;
 import dominik.bankier.exception.NotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 class AccountService {
 
@@ -22,8 +25,14 @@ class AccountService {
     private final ClientFacade clientFacade;
     private final AccountMapper accountMapper;
 
+
+    @Transactional
     void createAccount(AccountCreateDto accountCreateDto){
         ClientFindDto clientFindDto = clientFacade.retrieveClientById(accountCreateDto.getClientId());
+        if(!Objects.equals(clientFindDto.getStatus(), ClientStatusList.ACTIVE.getStatus())){
+            log.warn("Client status are not active");
+            throw new NotActiveException(ExceptionMessage.CLIENT_NOT_ACTIVE);
+        }
         Account account = accountMapper.mapToAccount(accountCreateDto);
         account.setAccountNumber(generateAccountNumber(account.getCurrency(),clientFindDto));
         Account savingAccount = accountRepository.save(account);

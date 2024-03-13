@@ -24,6 +24,7 @@ class AddressController {
         AddressFindDto addressByGivenId = addressService.findAddressByGivenId(addressId);
         return ResponseEntity.ok(addressByGivenId);
     }
+
     @PostMapping("create/{clientId}")
     ResponseEntity<Void>addAddressToClient(@RequestBody AddressCreateDto addressCreateDto, @PathVariable     long clientId){
         addressService.createAddress(addressCreateDto,clientId);

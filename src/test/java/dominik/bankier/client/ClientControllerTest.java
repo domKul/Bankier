@@ -8,7 +8,6 @@ import dominik.bankier.client.query.ClientUpdateDto;
 import dominik.bankier.exception.ExceptionMessage;
 import dominik.bankier.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -34,8 +33,6 @@ class ClientControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @InjectMocks
-    private ClientController clientController;
     @MockBean
     private ClientService clientService;
     @Autowired
@@ -148,7 +145,7 @@ class ClientControllerTest {
                 .accountsList(new HashSet<>())
                 .addresses(new HashSet<>())
                 .build();
-        when(clientService.patchClientInfo(expected.getClientId(), clientUpdateDto)).thenReturn(expected);
+        //when(clientService.patchClientInfo(expected.getClientId(), clientUpdateDto)).thenReturn(expected);
         //When
         mockMvc.perform(MockMvcRequestBuilders.patch("/v1/clients/" + 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -165,7 +162,6 @@ class ClientControllerTest {
         //Given
         long clientId = 1L;
         ClientStatusList inactive = ClientStatusList.INACTIVE;
-        doNothing().when(clientService).changeStatusOfClient(clientId,inactive);
         //When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch("/v1/clients/status/{clientId}",clientId)
                         .contentType(MediaType.APPLICATION_JSON)

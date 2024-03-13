@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-enum ClientStatusList {
+public enum ClientStatusList {
     ACTIVE("ACTIVE"),
     SUSPENDED("SUSPENDED"),
     INACTIVE("INACTIVE");

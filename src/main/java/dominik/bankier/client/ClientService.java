@@ -127,6 +127,7 @@ class ClientService {
     void changeStatusOfClient(final long clientId, ClientStatusList clientStatusList) {
         Client client = getClient(clientId);
         statusChange(client,clientStatusList);
+        log.info("Status change");
     }
 
     void statusChange(Client client, ClientStatusList clientStatusList) {
