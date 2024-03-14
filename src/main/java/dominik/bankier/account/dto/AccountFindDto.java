@@ -1,6 +1,7 @@
-package dominik.bankier.account;
+package dominik.bankier.account.dto;
 
-import dominik.bankier.transaction.Transaction;
+import dominik.bankier.account.CurrencyList;
+import dominik.bankier.transaction.dto.query.SimpleTransactionQueryDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,7 +11,7 @@ import java.util.Set;
 
 @Getter
 @AllArgsConstructor
-class AccountFindDto {
+public class AccountFindDto {
 
     private long accountId;
     private String accountNumber;
@@ -18,6 +19,6 @@ class AccountFindDto {
     private BigDecimal balance;
     private CurrencyList currency;
     private LocalDate creationDate;
-    private Set<Transaction> transactionsTo;
-    private Set<Transaction> transactionsFrom;
+    private Set<SimpleTransactionQueryDto> transactionsTo;
+    private Set<SimpleTransactionQueryDto> transactionsFrom;
 }

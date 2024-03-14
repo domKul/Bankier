@@ -1,8 +1,8 @@
 package dominik.bankier.client;
 
-import dominik.bankier.client.query.ClientCreateDto;
-import dominik.bankier.client.query.ClientFindDto;
-import dominik.bankier.client.query.ClientUpdateDto;
+import dominik.bankier.client.dto.ClientCreateDto;
+import dominik.bankier.client.dto.query.ClientFindDto;
+import dominik.bankier.client.dto.ClientUpdateDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

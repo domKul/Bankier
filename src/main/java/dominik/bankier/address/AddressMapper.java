@@ -1,6 +1,6 @@
 package dominik.bankier.address;
 
-import dominik.bankier.address.query.AddressCreateDto;
+import dominik.bankier.address.dto.AddressCreateDto;
 import org.springframework.stereotype.Component;
 
 @Component

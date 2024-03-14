@@ -1,4 +1,4 @@
-package dominik.bankier.account.query;
+package dominik.bankier.account.dto;
 
 import dominik.bankier.account.CurrencyList;
 import jakarta.persistence.EnumType;

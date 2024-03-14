@@ -1,8 +1,8 @@
 package dominik.bankier.client;
 
-import dominik.bankier.address.query.AddressCreateDto;
-import dominik.bankier.client.query.ClientCreateDto;
-import dominik.bankier.client.query.ClientFindDto;
+import dominik.bankier.address.dto.AddressCreateDto;
+import dominik.bankier.client.dto.ClientCreateDto;
+import dominik.bankier.client.dto.query.ClientFindDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,10 +1,10 @@
 package dominik.bankier.client;
 
 import dominik.bankier.address.AddressFacade;
-import dominik.bankier.address.query.AddressCreateDto;
-import dominik.bankier.client.query.ClientCreateDto;
-import dominik.bankier.client.query.ClientFindDto;
-import dominik.bankier.client.query.ClientUpdateDto;
+import dominik.bankier.address.dto.AddressCreateDto;
+import dominik.bankier.client.dto.ClientCreateDto;
+import dominik.bankier.client.dto.query.ClientFindDto;
+import dominik.bankier.client.dto.ClientUpdateDto;
 import dominik.bankier.exception.AlreadyExistException;
 import dominik.bankier.exception.ExceptionMessage;
 import dominik.bankier.exception.NotFoundException;

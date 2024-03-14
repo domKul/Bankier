@@ -1,9 +1,8 @@
 package dominik.bankier.address;
 
-import dominik.bankier.address.query.AddressCreateDto;
+import dominik.bankier.address.dto.AddressCreateDto;
 import dominik.bankier.exception.AlreadyExistException;
 import dominik.bankier.exception.ExceptionMessage;
-import dominik.bankier.exception.NotActiveException;
 import dominik.bankier.exception.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

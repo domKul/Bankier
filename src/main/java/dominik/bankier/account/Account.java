@@ -1,6 +1,6 @@
 package dominik.bankier.account;
 
-import dominik.bankier.transaction.Transaction;
+import dominik.bankier.transaction.dto.query.SimpleTransactionQueryDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
@@ -35,10 +35,10 @@ class Account {
     private LocalDate creationDate;
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "accountFrom", fetch = FetchType.LAZY)
-    private Set<Transaction> transactionsFrom;
+    private Set<SimpleTransactionQueryDto> transactionsFrom;
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "accountTo", fetch = FetchType.LAZY)
-    private Set<Transaction> transactionsTo;
+    private Set<SimpleTransactionQueryDto> transactionsTo;
 
     public Account(long client_id, BigDecimal balance, CurrencyList currency) {
         this.client_id = client_id;

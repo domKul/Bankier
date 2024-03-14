@@ -1,6 +1,6 @@
 package dominik.bankier.address;
 
-import dominik.bankier.address.query.AddressCreateDto;
+import dominik.bankier.address.dto.AddressCreateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

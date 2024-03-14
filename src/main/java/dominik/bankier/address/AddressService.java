@@ -1,6 +1,6 @@
 package dominik.bankier.address;
 
-import dominik.bankier.address.query.AddressCreateDto;
+import dominik.bankier.address.dto.AddressCreateDto;
 import dominik.bankier.exception.AddressSaveException;
 import dominik.bankier.exception.AlreadyExistException;
 import dominik.bankier.exception.ExceptionMessage;

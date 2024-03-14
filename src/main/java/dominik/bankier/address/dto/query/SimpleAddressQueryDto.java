@@ -1,10 +1,9 @@
-package dominik.bankier.address.query;
+package dominik.bankier.address.dto.query;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "addresses")

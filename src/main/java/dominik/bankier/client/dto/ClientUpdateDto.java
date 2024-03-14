@@ -1,4 +1,4 @@
-package dominik.bankier.client.query;
+package dominik.bankier.client.dto;
 
 public record ClientUpdateDto (
                                String firstname,

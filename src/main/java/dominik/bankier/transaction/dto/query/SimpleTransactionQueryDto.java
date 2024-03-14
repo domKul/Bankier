@@ -1,22 +1,19 @@
-package dominik.bankier.transaction;
+package dominik.bankier.transaction.dto.query;
 
 import dominik.bankier.account.dto.query.SimpleAccountQueryDto;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "transactions")
 @NoArgsConstructor
 @Getter
-@Setter
 @EqualsAndHashCode
-class Transaction {
+public class SimpleTransactionQueryDto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,8 +30,8 @@ class Transaction {
     private BigDecimal amount;
     private LocalDateTime transactionDate;
 
-    public Transaction(SimpleAccountQueryDto accountFrom, SimpleAccountQueryDto accountTo,
-                       String title, BigDecimal amount) {
+    public SimpleTransactionQueryDto(SimpleAccountQueryDto accountFrom, SimpleAccountQueryDto accountTo,
+                                     String title, BigDecimal amount) {
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
         this.title = title;

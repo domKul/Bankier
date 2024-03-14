@@ -1,7 +1,7 @@
 package dominik.bankier.address;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dominik.bankier.address.query.AddressCreateDto;
+import dominik.bankier.address.dto.AddressCreateDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

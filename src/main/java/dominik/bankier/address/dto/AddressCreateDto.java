@@ -1,4 +1,4 @@
-package dominik.bankier.address.query;
+package dominik.bankier.address.dto;
 
 import jakarta.validation.constraints.NotNull;
 

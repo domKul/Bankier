@@ -1,6 +1,8 @@
 package dominik.bankier.account;
 
-import dominik.bankier.account.query.AccountCreateDto;
+import dominik.bankier.account.dto.AccountCreateDto;
+import dominik.bankier.account.dto.AccountFindDto;
+import dominik.bankier.account.dto.query.SimpleAccountQueryDto;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -25,5 +27,12 @@ class AccountMapper {
                 account.getTransactionsTo(),
                 account.getTransactionsFrom()
                 );
+    }
+
+    SimpleAccountQueryDto mapToSimpleAccountQueryDto(Account account){
+        return new SimpleAccountQueryDto(account.getAccountId()
+                ,account.getAccountNumber(),
+                account.getBalance(),
+                account.getCurrency());
     }
 }

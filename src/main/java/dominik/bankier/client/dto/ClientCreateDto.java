@@ -1,6 +1,6 @@
-package dominik.bankier.client.query;
+package dominik.bankier.client.dto;
 
-import dominik.bankier.address.query.AddressCreateDto;
+import dominik.bankier.address.dto.AddressCreateDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

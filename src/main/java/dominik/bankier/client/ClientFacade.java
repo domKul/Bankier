@@ -1,6 +1,6 @@
 package dominik.bankier.client;
 
-import dominik.bankier.client.query.ClientFindDto;
+import dominik.bankier.client.dto.query.ClientFindDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

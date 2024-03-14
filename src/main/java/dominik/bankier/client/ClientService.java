@@ -1,9 +1,9 @@
 package dominik.bankier.client;
 
 import dominik.bankier.address.AddressFacade;
-import dominik.bankier.client.query.ClientCreateDto;
-import dominik.bankier.client.query.ClientFindDto;
-import dominik.bankier.client.query.ClientUpdateDto;
+import dominik.bankier.client.dto.ClientCreateDto;
+import dominik.bankier.client.dto.query.ClientFindDto;
+import dominik.bankier.client.dto.ClientUpdateDto;
 import dominik.bankier.exception.AlreadyExistException;
 import dominik.bankier.exception.ExceptionMessage;
 import dominik.bankier.exception.NotActiveException;
@@ -29,7 +29,6 @@ class ClientService {
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
     private final AddressFacade addressFacade;
-
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     ClientCreateDto createClient(ClientCreateDto clientCreateDto) {

@@ -1,7 +1,7 @@
-package dominik.bankier.client.query;
+package dominik.bankier.client.dto.query;
 
-import dominik.bankier.account.query.SimpleAccountQueryDto;
-import dominik.bankier.address.query.SimpleAddressQueryDto;
+import dominik.bankier.account.dto.query.SimpleAccountQueryDto;
+import dominik.bankier.address.dto.query.SimpleAddressQueryDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

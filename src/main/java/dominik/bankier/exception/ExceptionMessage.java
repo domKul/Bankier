@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum ExceptionMessage {
 
     NOT_FOUND("Entity not found"),
+    INSUFFICIENT_FOUNDS("Insufficient funds on source account"),
     CLIENT_NOT_ACTIVE("Client status are not active"),
     SAVE_PROBLEM("An error occurred while saving"),
     ALREADY_EXIST("Object already exist"),

@@ -1,9 +1,10 @@
 package dominik.bankier.account;
 
-import dominik.bankier.account.query.AccountCreateDto;
+import dominik.bankier.account.dto.AccountCreateDto;
+import dominik.bankier.account.dto.AccountFindDto;
 import dominik.bankier.client.ClientFacade;
 import dominik.bankier.client.ClientStatusList;
-import dominik.bankier.client.query.ClientFindDto;
+import dominik.bankier.client.dto.query.ClientFindDto;
 import dominik.bankier.exception.ExceptionMessage;
 import dominik.bankier.exception.NotActiveException;
 import dominik.bankier.exception.NotFoundException;
@@ -14,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Random;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +30,7 @@ class AccountService {
     void createAccount(AccountCreateDto accountCreateDto){
         ClientFindDto clientFindDto = clientFacade.retrieveClientById(accountCreateDto.getClientId());
         if(!Objects.equals(clientFindDto.getStatus(), ClientStatusList.ACTIVE.getStatus())){
-            log.warn("Client status are not active");
+            log.warn("Client are not active");
             throw new NotActiveException(ExceptionMessage.CLIENT_NOT_ACTIVE);
         }
         Account account = accountMapper.mapToAccount(accountCreateDto);
@@ -54,6 +54,11 @@ class AccountService {
     private Account findAccountById(long accountId) {
         return accountRepository.findById(accountId)
                 .orElseThrow(()->new NotFoundException(ExceptionMessage.NOT_FOUND));
+    }
+
+    AccountFindDto findAccountByNumber(String number) {
+        return accountMapper.mapToAccountFindDto(accountRepository.findByAccountNumber(number)
+                .orElseThrow(()->new NotFoundException(ExceptionMessage.NOT_FOUND)));
     }
 
     private static String generateAccountNumber(CurrencyList currencyList, ClientFindDto clientFindDto) {

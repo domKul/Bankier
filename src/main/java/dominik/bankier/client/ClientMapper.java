@@ -1,7 +1,7 @@
 package dominik.bankier.client;
 
-import dominik.bankier.client.query.ClientCreateDto;
-import dominik.bankier.client.query.ClientFindDto;
+import dominik.bankier.client.dto.ClientCreateDto;
+import dominik.bankier.client.dto.query.ClientFindDto;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

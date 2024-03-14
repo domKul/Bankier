@@ -1,6 +1,7 @@
 package dominik.bankier.account;
 
-import dominik.bankier.account.query.AccountCreateDto;
+import dominik.bankier.account.dto.AccountCreateDto;
+import dominik.bankier.account.dto.AccountFindDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
